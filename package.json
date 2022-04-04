@@ -3,5 +3,8 @@
     "axios": "^0.26.1",
     "dns2": "^2.0.1",
     "ip-address": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/dns2": "^2.0.1"
   }
 }

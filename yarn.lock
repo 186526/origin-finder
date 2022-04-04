@@ -2,6 +2,18 @@
 # yarn lockfile v1
 
 
+"@types/dns2@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.npmmirror.com/@types/dns2/-/dns2-2.0.1.tgz#a4d8d606bca42591e2073898a5a770937ec066e7"
+  integrity sha512-jahzqSBZu46nQDvpOfIy0KTkzhKhD1MajondSSBlyspow3Rk4smslJ5ZFyG7FDt8wvat/BS76qOpukOdzQUnVw==
+  dependencies:
+    "@types/node" "*"
+
+"@types/node@*":
+  version "17.0.23"
+  resolved "https://registry.npmmirror.com/@types/node/-/node-17.0.23.tgz#3b41a6e643589ac6442bdbd7a4a3ded62f33f7da"
+  integrity sha512-UxDxWn7dl97rKVeVS61vErvw086aCYhDLyvRQZ5Rk65rZKepaFdm53GeqXaKBuOhED4e9uWq34IC3TdSdJJ2Gw==
+
 axios@^0.26.1:
   version "0.26.1"
   resolved "https://registry.npmmirror.com/axios/-/axios-0.26.1.tgz#1ede41c51fcf51bbbd6fd43669caaa4f0495aaa9"

@@ -1,4 +1,4 @@
-import handler from "./handler";
+import { handler } from "./handler";
 import dns2 = require("dns2");
 
 const server = dns2.createServer({
