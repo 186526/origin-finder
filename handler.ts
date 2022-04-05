@@ -23,12 +23,13 @@ export function getIPv4(question: dns2.DnsQuestion): boolean | Address4 {
   const name = question.name;
   const arpaAddress =
     name.split(".").reduce((pre: string, cur): string => {
-      if (isNaN(Number(cur))) {
+      if (isNaN(Number(cur)) || Number(cur) >= 255) {
         return pre;
       }
       pre += cur + ".";
       return pre;
     }, "") + "in-addr.arpa.";
+  console.log(arpaAddress);
   try {
     return Address4.fromArpa(arpaAddress);
   } catch (e) {
@@ -46,6 +47,7 @@ export function getIPv6(question: dns2.DnsQuestion): boolean | Address6 {
       pre += cur + ".";
       return pre;
     }, "") + "ip6.arpa.";
+  console.log(arpaAddress);
   try {
     return Address6.fromArpa(arpaAddress);
   } catch (e) {
@@ -68,11 +70,38 @@ export const handler: DNS.DnsHandler = async (
     address = getIPv4(question);
     addressType = Packet.TYPE.A;
   }
+
   if (getIPv6(question)) {
     address = getIPv6(question);
     addressType = Packet.TYPE.AAAA;
   }
+
   if (![Packet.TYPE.AAAA, Packet.TYPE.A].includes(addressType)) {
+    //@ts-ignore
+    response.authorities.push({
+      name: name,
+      type: Packet.TYPE.NS,
+      class: Packet.CLASS.IN,
+      ttl: 114514,
+      ns: "ns-origin.186526.dn42.",
+    });
+
+    //@ts-ignore
+    response.authorities.push({
+      name: name,
+      type: Packet.TYPE.SOA,
+      class: Packet.CLASS.IN,
+      ttl: 114514,
+      //@ts-ignore
+      primary: "ns-origin.186526.dn42.",
+      admin: "i@186526.xyz",
+      serial: 1145141919,
+      refresh: 100,
+      retry: 3,
+      expiration: 10,
+      minimum: 10,
+    });
+    send(response);
     return;
   }
 
@@ -103,37 +132,6 @@ export const handler: DNS.DnsHandler = async (
       } | ${details.route ?? address.addressMinusSuffix + address.subnet} | ${
         (details.country ?? { code: "IDK" }).code ?? "IDK"
       } | ${details.from} | IDK`,
-    });
-  }
-
-  //@ts-ignore
-  if ([Packet.TYPE.NS].includes(question.type)) {
-    //@ts-ignore
-    response.authorities.push({
-      name: name,
-      type: Packet.TYPE.NS,
-      class: Packet.CLASS.IN,
-      ttl: 114514,
-      ns: "ns-origin.186526.dn42.",
-    });
-  }
-
-  //@ts-ignore
-  if ([Packet.TYPE.SOA].includes(question.type)) {
-    //@ts-ignore
-    response.additionals.push({
-      name: name,
-      type: Packet.TYPE.SOA,
-      class: Packet.CLASS.IN,
-      ttl: 114514,
-      //@ts-ignore
-      primary: "ns-origin.186526.dn42.",
-      admin: "i@186526.xyz",
-      serial: 1145141919,
-      refresh: 100,
-      retry: 3,
-      expiration: 10,
-      minimum: 10,
     });
   }
 
